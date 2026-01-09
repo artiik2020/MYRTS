@@ -37,6 +37,17 @@ class Unit(arcade.Sprite):
             self.center_x += self.change_x * delta_time
             self.center_y += self.change_y * delta_time
 
+        dx = self.target_x - self.center_x
+        dy = self.target_y - self.center_y
+        distance = max((dx ** 2 + dy ** 2) ** 0.5, 1)  # избегаем деления на 0
+        if distance <= 50:
+            self.change_x = 0
+            self.change_y = 0
+        else:
+            self.change_x = (dx / distance) * self.speed
+            self.change_y = (dy / distance) * self.speed
+
+
     def set_target(self, x, y):
         """Установить цель и рассчитать направление движения"""
         self.target_x = x
@@ -48,10 +59,12 @@ class Unit(arcade.Sprite):
         distance = max((dx ** 2 + dy ** 2) ** 0.5, 1)  # избегаем деления на 0
 
         # Нормализуем вектор и умножаем на скорость
-        self.change_x = (dx / distance) * self.speed
-        self.change_y = (dy / distance) * self.speed
-        if int(self.target_x) == int(self.center_x) and int(self.target_y) == int(self.center_y):
+        print(distance)
+        if distance <= 50:
             self.change_x = 0
             self.change_y = 0
+        else:
+            self.change_x = (dx / distance) * self.speed
+            self.change_y = (dy / distance) * self.speed
 
         print(f"🔄 {self.name} движется к ({x}, {y})")
